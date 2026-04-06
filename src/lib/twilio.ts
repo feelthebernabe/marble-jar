@@ -1,20 +1,25 @@
 import twilio from "twilio";
 
-const client = twilio(
-  process.env.TWILIO_ACCOUNT_SID!,
-  process.env.TWILIO_AUTH_TOKEN!
-);
+let _client: ReturnType<typeof twilio> | null = null;
 
-const FROM = process.env.TWILIO_PHONE_NUMBER!;
+function getClient() {
+  if (!_client) {
+    _client = twilio(
+      process.env.TWILIO_ACCOUNT_SID!,
+      process.env.TWILIO_AUTH_TOKEN!
+    );
+  }
+  return _client;
+}
 
 export async function sendSms(
   to: string,
   body: string,
   mediaUrl?: string
 ): Promise<void> {
-  await client.messages.create({
+  await getClient().messages.create({
     to,
-    from: FROM,
+    from: process.env.TWILIO_PHONE_NUMBER!,
     body,
     ...(mediaUrl ? { mediaUrl: [mediaUrl] } : {}),
   });
