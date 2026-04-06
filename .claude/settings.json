@@ -8,7 +8,10 @@
       "Bash(npx create-next-app@latest marble-jar-init --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm)",
       "Bash(rsync -a --exclude='.git' /tmp/marble-jar-init/ \"/Users/michelle/Vibe Projects/marble jar/\")",
       "Bash(npm install:*)",
-      "Bash(npx prisma:*)"
+      "Bash(npx prisma:*)",
+      "Bash(npm run:*)",
+      "Bash(timeout 15 npx next build)",
+      "Bash(npx next:*)"
     ],
     "additionalDirectories": [
       "/Users/michelle/Vibe Projects/marble jar/docs/superpowers"
