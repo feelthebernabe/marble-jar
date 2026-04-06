@@ -1,65 +1,119 @@
-import Image from "next/image";
+import { PaperCard } from "@/components/ui/paper-card";
+import { ZineButton } from "@/components/ui/zine-button";
+import { InkInput } from "@/components/ui/ink-input";
+import { ProgressDots } from "@/components/ui/progress-dots";
+import { TapeDivider } from "@/components/ui/tape-divider";
+
+function Ransom({ text }: { text: string }) {
+  return (
+    <span className="ransom">
+      {text.split(" ").map((word, i) => (
+        <span key={i}>{word}</span>
+      ))}
+    </span>
+  );
+}
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="max-w-2xl mx-auto px-6 py-12">
+      {/* Typography showcase */}
+      <h1 className="font-marker text-5xl text-ink mb-2 -rotate-1">
+        MARBLE JAR
+      </h1>
+      <h2 className="font-archivo text-2xl text-punk-pink mb-4 rotate-[0.5deg]">
+        FRIEND ACCOUNTABILITY
+      </h2>
+      <p className="font-typewriter text-ink mb-2">
+        This is body text in Special Elite. It looks like it was typed on a
+        busted typewriter found in a skip behind the Roxy. Every letter slightly
+        off, slightly wrong. Perfect.
+      </p>
+      <p className="font-mono text-sm text-ink/70 mb-8">
+        monospace details in Courier Prime -- timestamps, codes, the small print
+      </p>
+
+      <TapeDivider index={0} />
+
+      {/* Ransom note */}
+      <div className="mb-8">
+        <p className="text-xl leading-relaxed">
+          <Ransom text="keep your promises or lose your marbles" />
+        </p>
+      </div>
+
+      <TapeDivider index={1} />
+
+      {/* Paper cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-8">
+        <PaperCard index={0}>
+          <h3 className="font-marker text-xl mb-2">WEEKLY CHECK-IN</h3>
+          <p className="font-typewriter text-sm">
+            Did you actually go to the gym or are you lying to your mates again?
           </p>
+          <div className="flex gap-2 mt-3">
+            <span className="stamp">+</span>
+            <span className="stamp stamp--pink">!</span>
+            <span className="stamp stamp--filled">X</span>
+          </div>
+        </PaperCard>
+
+        <PaperCard index={1}>
+          <h3 className="font-marker text-xl mb-2">THE PACT</h3>
+          <p className="font-typewriter text-sm">
+            3 marbles in. Break a promise, one comes out. Empty jar = you buy
+            everyone chips.
+          </p>
+        </PaperCard>
+
+        <PaperCard index={2}>
+          <h3 className="font-archivo text-lg mb-2 text-punk-pink">
+            NO EXCUSES
+          </h3>
+          <p className="font-typewriter text-sm">
+            Your friends are watching. The jar doesn&apos;t lie.
+          </p>
+        </PaperCard>
+      </div>
+
+      <TapeDivider index={2} />
+
+      {/* Buttons */}
+      <div className="flex flex-wrap gap-4 mb-8">
+        <ZineButton variant="primary">ADD MARBLE</ZineButton>
+        <ZineButton variant="secondary">REMOVE MARBLE</ZineButton>
+      </div>
+
+      <TapeDivider index={3} />
+
+      {/* Input */}
+      <div className="max-w-sm mb-8">
+        <InkInput label="Your Name" placeholder="type here..." />
+      </div>
+
+      <TapeDivider index={4} />
+
+      {/* Progress dots */}
+      <div className="space-y-4 mb-8">
+        <div>
+          <p className="font-typewriter text-sm mb-2">Step 1 of 5:</p>
+          <ProgressDots total={5} current={0} />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div>
+          <p className="font-typewriter text-sm mb-2">Step 3 of 5:</p>
+          <ProgressDots total={5} current={2} />
         </div>
-      </main>
+        <div>
+          <p className="font-typewriter text-sm mb-2">Step 5 of 5 (done):</p>
+          <ProgressDots total={5} current={4} />
+        </div>
+      </div>
+
+      <TapeDivider index={5} />
+
+      <p className="font-marker text-center text-3xl text-punk-pink -rotate-2 mt-8">
+        DIY OR DIE
+      </p>
     </div>
   );
 }
