@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -10,4 +5,185 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+model User {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  name            String
+  phone           String   @unique
+  timezone        String   @default("America/Los_Angeles")
+  marbleColor     String?
+  marbleSymbol    String?
+  stravaToken     String?
+  stravaRefresh   String?
+  stravaAthleteId String?
+  onboardingStep  Int      @default(0)
+  createdAt       DateTime @default(now())
+
+  createdGroups      Group[]            @relation("groupCreator")
+  groupMembers       GroupMember[]
+  marbles            Marble[]
+  activities         Activity[]
+  buddyNotifications BuddyNotification[]
+  favorites          Favorite[]
+  goalApprovals      GoalApproval[]
+  feedPosts          FeedPost[]
+}
+
+model Group {
+  id          String   @id @default(cuid())
+  name        String
+  inviteCode  String   @unique
+  createdById String
+  createdAt   DateTime @default(now())
+
+  createdBy     User          @relation("groupCreator", fields: [createdById], references: [id])
+  jars          Jar[]
+  members       GroupMember[]
+  agentMemories AgentMemory[]
+}
+
+model GroupMember {
+  id       String   @id @default(cuid())
+  groupId  String
+  userId   String
+  joinedAt DateTime @default(now())
+
+  group Group @relation(fields: [groupId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@unique([groupId, userId])
+}
+
+model Jar {
+  id               String    @id @default(cuid())
+  groupId          String
+  category         JarCategory
+  status           JarStatus   @default(PENDING)
+  goalDescription  String?
+  treatDescription String
+  capacity         Int
+  createdAt        DateTime    @default(now())
+  completedAt      DateTime?
+
+  group         Group          @relation(fields: [groupId], references: [id])
+  marbles       Marble[]
+  activities    Activity[]
+  goalApprovals GoalApproval[]
+  feedPosts     FeedPost[]
+}
+
+enum JarCategory {
+  WORKOUT
+  MEDITATION
+  CUSTOM
+}
+
+enum JarStatus {
+  PENDING
+  GOAL_SETTING
+  ACTIVE
+  COMPLETE
+}
+
+model Marble {
+  id       String   @id @default(cuid())
+  jarId    String
+  userId   String
+  earnedAt DateTime @default(now())
+  dayDate  String
+  source   String
+
+  jar  Jar  @relation(fields: [jarId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([jarId, userId, dayDate])
+}
+
+model Activity {
+  id               String         @id @default(cuid())
+  userId           String
+  jarId            String
+  source           String
+  status           ActivityStatus @default(CONFIRMED)
+  description      String?
+  loggedAt         DateTime       @default(now())
+  stravaActivityId String?        @unique
+
+  user              User               @relation(fields: [userId], references: [id])
+  jar               Jar                @relation(fields: [jarId], references: [id])
+  buddyNotification BuddyNotification?
+}
+
+enum ActivityStatus {
+  CONFIRMED
+}
+
+model GoalApproval {
+  id         String    @id @default(cuid())
+  jarId      String
+  userId     String
+  approved   Boolean   @default(false)
+  approvedAt DateTime?
+
+  jar  Jar  @relation(fields: [jarId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([jarId, userId])
+}
+
+model FeedPost {
+  id        String   @id @default(cuid())
+  jarId     String
+  userId    String?
+  type      String
+  content   String
+  mediaUrl  String?
+  createdAt DateTime @default(now())
+
+  jar  Jar   @relation(fields: [jarId], references: [id])
+  user User? @relation(fields: [userId], references: [id])
+}
+
+model BuddyNotification {
+  id         String   @id @default(cuid())
+  activityId String   @unique
+  buddyId    String
+  message    String
+  mediaUrl   String?
+  sentAt     DateTime @default(now())
+
+  activity Activity @relation(fields: [activityId], references: [id])
+  buddy    User     @relation(fields: [buddyId], references: [id])
+}
+
+model Favorite {
+  id       String   @id @default(cuid())
+  userId   String
+  category String
+  value    String
+  addedAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model AgentMemory {
+  id        String   @id @default(cuid())
+  groupId   String
+  type      String
+  content   String
+  createdAt DateTime @default(now())
+
+  group Group @relation(fields: [groupId], references: [id])
+}
+
+model RetryQueue {
+  id          String   @id @default(cuid())
+  type        String
+  payload     Json
+  attempts    Int      @default(0)
+  maxAttempts Int      @default(3)
+  nextRetryAt DateTime
+  createdAt   DateTime @default(now())
 }
