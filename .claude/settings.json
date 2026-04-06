@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/michelle/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.2/skills/subagent-driven-development/**)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm)",
+      "Read(//private/tmp/**)",
+      "Bash(rm -rf marble-jar-init)",
+      "Bash(npx create-next-app@latest marble-jar-init --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm)",
+      "Bash(rsync -a --exclude='.git' /tmp/marble-jar-init/ \"/Users/michelle/Vibe Projects/marble jar/\")",
+      "Bash(npm install:*)",
+      "Bash(npx prisma:*)"
+    ],
+    "additionalDirectories": [
+      "/Users/michelle/Vibe Projects/marble jar/docs/superpowers"
+    ]
+  }
+}
