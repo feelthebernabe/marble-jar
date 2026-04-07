@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
+import Anthropic from "@anthropic-ai/sdk";
 import { db } from "@/lib/db";
 import { getValidStravaToken, getStravaActivity } from "@/lib/strava";
+import { buildGroupContext, buildSystemPrompt } from "@/lib/agents/personality";
+import { notifyBuddy } from "@/lib/agents/tools/sms-tools";
 
 /**
  * GET — Strava webhook verification (subscription validation).
@@ -114,6 +117,38 @@ export async function POST(request: Request) {
             source: `strava:${activityRecord.id}`,
           },
         });
+
+        // Send personality-driven buddy notification (non-critical)
+        try {
+          const groupContext = await buildGroupContext(jar.groupId);
+          const systemPrompt = buildSystemPrompt(groupContext);
+
+          const anthropic = new Anthropic();
+          const msgResponse = await anthropic.messages.create({
+            model: "claude-sonnet-4-20250514",
+            max_tokens: 256,
+            system: systemPrompt,
+            messages: [
+              {
+                role: "user",
+                content:
+                  `Craft a 2-3 sentence buddy notification about this Strava activity: ` +
+                  `${user.name} just did "${activity.type}: ${activity.name}". ` +
+                  `Be specific, use their name, and reference something from the favorites pot if possible. ` +
+                  `Reply with ONLY the notification text, nothing else.`,
+              },
+            ],
+          });
+
+          const textBlock = msgResponse.content.find(
+            (b): b is Anthropic.TextBlock => b.type === "text"
+          );
+          if (textBlock) {
+            await notifyBuddy(user.id, jar.id, textBlock.text);
+          }
+        } catch (notifyErr) {
+          console.error("Buddy notification failed (non-critical):", notifyErr);
+        }
       } catch (err: unknown) {
         // Unique constraint violation = already minted for this jar+user+day — skip
         if (
