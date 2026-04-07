@@ -48,9 +48,11 @@ export async function GET(request: Request) {
   } else if (step === 3) {
     redirectPath = "/onboarding/favorites";
   } else if (step === 4) {
+    redirectPath = "/onboarding/strava";
+  } else if (step === 5) {
     redirectPath = "/onboarding/group";
   } else {
-    // steps 5-6
+    // steps 6+
     redirectPath = "/onboarding/jars";
   }
 

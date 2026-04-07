@@ -99,7 +99,7 @@ export default function JarsPage() {
 
   return (
     <div>
-      <ProgressDots total={5} current={4} className="mb-6" />
+      <ProgressDots total={6} current={5} className="mb-6" />
 
       <PaperCard index={4} className="p-6">
         <h2

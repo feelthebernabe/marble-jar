@@ -62,7 +62,7 @@ export default function GroupPage() {
 
   return (
     <div>
-      <ProgressDots total={5} current={3} className="mb-6" />
+      <ProgressDots total={6} current={4} className="mb-6" />
 
       <PaperCard index={3} className="p-6">
         {mode === "choose" && (

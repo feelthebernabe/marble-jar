@@ -56,7 +56,7 @@ export function FavoritesForm() {
         const data = await res.json();
         throw new Error(data.error || "Something went wrong");
       }
-      router.push("/onboarding/group");
+      router.push("/onboarding/strava");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {

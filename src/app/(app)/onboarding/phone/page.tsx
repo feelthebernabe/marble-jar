@@ -36,7 +36,7 @@ export default function PhonePage() {
 
   return (
     <div>
-      <ProgressDots total={5} current={1} className="mb-6" />
+      <ProgressDots total={6} current={1} className="mb-6" />
 
       <PaperCard index={1} className="p-6">
         <h2

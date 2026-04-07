@@ -5,7 +5,7 @@ import { FavoritesForm } from "@/components/onboarding/favorites-form";
 export default function FavoritesPage() {
   return (
     <div>
-      <ProgressDots total={5} current={2} className="mb-6" />
+      <ProgressDots total={6} current={2} className="mb-6" />
 
       <PaperCard index={2} className="p-6">
         <h2

@@ -44,7 +44,7 @@ export default function MarblePage() {
 
   return (
     <div>
-      <ProgressDots total={5} current={0} className="mb-6" />
+      <ProgressDots total={6} current={0} className="mb-6" />
 
       <PaperCard index={0} className="p-6">
         {step === "name" && (
