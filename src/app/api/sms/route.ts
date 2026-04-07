@@ -1,15 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { sendSms, validateTwilioSignature } from "@/lib/twilio";
-
-// Intake agent implemented in Task 11
-async function handleIntakeMessage(
-  _user: { id: string; phone: string; name: string },
-  _body: string
-): Promise<void> {
-  // Stub — replaced by actual agent in Task 11
-  throw new Error("Intake agent not yet implemented");
-}
+import { handleIntakeMessage } from "@/lib/agents/intake";
 
 /**
  * POST — Twilio SMS webhook.
