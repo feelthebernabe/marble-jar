@@ -13,6 +13,7 @@ interface MarbleData {
 interface JarWithMarblesProps {
   marbles: MarbleData[];
   capacity: number;
+  fillPercent?: number;
   label?: string;
 }
 
@@ -37,9 +38,9 @@ function calculatePositions(count: number) {
   return positions;
 }
 
-export function JarWithMarbles({ marbles, capacity, label }: JarWithMarblesProps) {
+export function JarWithMarbles({ marbles, capacity, fillPercent: serverFillPercent, label }: JarWithMarblesProps) {
   const positions = calculatePositions(marbles.length);
-  const fillPercent = capacity > 0 ? Math.round((marbles.length / capacity) * 100) : 0;
+  const fillPercent = serverFillPercent ?? (capacity > 0 ? Math.round((marbles.length / capacity) * 100) : 0);
 
   return (
     <div className="flex flex-col items-center">

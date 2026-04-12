@@ -26,9 +26,11 @@ model User {
   marbles            Marble[]
   activities         Activity[]
   buddyNotifications BuddyNotification[]
+  witnesses          Witness[]
   favorites          Favorite[]
   goalApprovals      GoalApproval[]
   feedPosts          FeedPost[]
+  reactions          Reaction[]
 }
 
 model Group {
@@ -97,6 +99,7 @@ model Marble {
 
   jar  Jar  @relation(fields: [jarId], references: [id])
   user User @relation(fields: [userId], references: [id])
+  reactions Reaction[]
 
   @@unique([jarId, userId, dayDate])
 }
@@ -106,7 +109,7 @@ model Activity {
   userId           String
   jarId            String
   source           String
-  status           ActivityStatus @default(CONFIRMED)
+  status           ActivityStatus @default(PENDING)
   description      String?
   loggedAt         DateTime       @default(now())
   stravaActivityId String?        @unique
@@ -114,10 +117,24 @@ model Activity {
   user              User               @relation(fields: [userId], references: [id])
   jar               Jar                @relation(fields: [jarId], references: [id])
   buddyNotification BuddyNotification?
+  witness           Witness?
 }
 
 enum ActivityStatus {
+  PENDING
   CONFIRMED
+  REJECTED
+}
+
+model Witness {
+  id           String    @id @default(cuid())
+  activityId   String    @unique
+  witnessId    String
+  confirmedAt  DateTime?
+  token        String    @unique @default(cuid())
+
+  activity     Activity @relation(fields: [activityId], references: [id])
+  witness      User     @relation(fields: [witnessId], references: [id])
 }
 
 model GoalApproval {
@@ -186,4 +203,17 @@ model RetryQueue {
   maxAttempts Int      @default(3)
   nextRetryAt DateTime
   createdAt   DateTime @default(now())
+}
+
+model Reaction {
+  id       String   @id @default(cuid())
+  marbleId String
+  userId   String
+  emoji    String
+  reactedAt DateTime @default(now())
+
+  marble Marble @relation(fields: [marbleId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@unique([marbleId, userId, emoji])
 }

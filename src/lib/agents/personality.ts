@@ -1,4 +1,5 @@
 import { SOUL_DOC } from "./soul";
+import { sampleContrasts, formatContrastsForPrompt } from "./contrasts";
 import { db } from "@/lib/db";
 
 // ---------------------------------------------------------------------------
@@ -235,7 +236,7 @@ export function buildSystemPrompt(context: GroupContext): string {
 
   parts.push(`\n## Current Context: ${context.groupName}\n`);
   parts.push(`**Your mood right now:** ${context.mood}`);
-  parts.push(`**Astrology:** ${context.astrology}`);
+  parts.push(`**Mood color (internal only — do not reference in messages):** ${context.astrology}`);
 
   if (context.favorites.length > 0) {
     parts.push(`\n### Favorites Pot (use these as cultural vocabulary)`);
@@ -256,6 +257,13 @@ export function buildSystemPrompt(context: GroupContext): string {
     parts.push(
       `- **${s.name}**: streak ${s.streak}, last marble ${s.daysSinceLastMarble === 999 ? "never" : `${s.daysSinceLastMarble}d ago`}, total ${s.totalMarbles}`
     );
+  }
+
+  // Add contrast examples so the agent has concrete good/bad message pairs
+  const contrasts = sampleContrasts(3);
+  const contrastSection = formatContrastsForPrompt(contrasts);
+  if (contrastSection) {
+    parts.push(contrastSection);
   }
 
   parts.push(

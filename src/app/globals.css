@@ -48,9 +48,40 @@ body {
 }
 
 /* ========================================
-   STAMP — rubber-stamped marble circles
+   GLASS MARBLE — 3D depth with highlights
    ======================================== */
 
+.marble-glass {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid;
+  font-family: var(--font-archivo);
+  font-size: 18px;
+  font-weight: 900;
+  position: relative;
+  /* 3D depth — lifted off the surface */
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 2px 4px rgba(255, 255, 255, 0.15);
+  /* Subtle glass reflection */
+  overflow: hidden;
+}
+
+.marble-glass .marble-symbol {
+  position: relative;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.3));
+}
+
+/* Legacy compat — keep .stamp working for any straggling usages */
 .stamp {
   display: inline-flex;
   align-items: center;
@@ -63,7 +94,6 @@ body {
   font-family: var(--font-archivo);
   font-size: 18px;
   font-weight: 900;
-  /* ink-bleed effect — slightly smudged edges */
   box-shadow:
     0 0 0 1px var(--color-ink),
     1px 1px 0 0 rgba(0, 0, 0, 0.3),
@@ -78,6 +108,147 @@ body {
 .stamp--filled {
   background: var(--color-ink);
   color: var(--color-white);
+}
+
+/* ========================================
+   BOTTOM NAV — persistent app navigation
+   ======================================== */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 64px;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  background: var(--color-kraft);
+  border-top: 3px solid var(--color-ink);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.bottom-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-decoration: none;
+  font-family: var(--font-archivo);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-ink);
+  opacity: 0.45;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.bottom-nav a:hover {
+  opacity: 0.7;
+}
+
+.bottom-nav a.active {
+  opacity: 1;
+  color: var(--color-punk-pink);
+}
+
+.bottom-nav a.active .nav-icon {
+  transform: scale(1.15);
+}
+
+.nav-icon {
+  font-size: 22px;
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+
+/* ========================================
+   CELEBRATION — full-screen overlay
+   ======================================== */
+
+.celebration-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* ========================================
+   FEED — activity timeline
+   ======================================== */
+
+.feed-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.12);
+}
+
+.feed-item:last-child {
+  border-bottom: none;
+}
+
+.reaction-bar {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.reaction-btn {
+  font-size: 16px;
+  padding: 2px 6px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  background: rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.reaction-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: var(--color-ink);
+  transform: scale(1.15);
+}
+
+.reaction-btn.active {
+  border-color: var(--color-punk-pink);
+  background: rgba(232, 23, 93, 0.1);
+}
+
+/* ========================================
+   PROFILE — stat cards
+   ======================================== */
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 12px;
+  border: 3px solid var(--color-ink);
+  background: var(--color-kraft-dark);
+}
+
+.stat-value {
+  font-family: var(--font-marker);
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--color-ink);
+}
+
+.stat-label {
+  font-family: var(--font-typewriter);
+  font-size: 0.75rem;
+  color: rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+  margin-top: 4px;
 }
 
 /* ========================================

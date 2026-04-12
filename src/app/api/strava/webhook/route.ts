@@ -97,14 +97,16 @@ export async function POST(request: Request) {
     // For each jar: create Activity + mint Marble (skip duplicates)
     for (const jar of activeWorkoutJars) {
       try {
-        // Create Activity record (stravaActivityId set to null for multi-jar support)
+        // Create Activity record — Strava is a trusted source, so auto-confirm.
+        // Use composite stravaActivityId to maintain uniqueness across jars.
         const activityRecord = await db.activity.create({
           data: {
             userId: user.id,
             jarId: jar.id,
             source: "strava",
+            status: "CONFIRMED",
             description: `${activity.type}: ${activity.name}`,
-            stravaActivityId: null,
+            stravaActivityId: `${stravaActivityId}:${jar.id}`,
           },
         });
 

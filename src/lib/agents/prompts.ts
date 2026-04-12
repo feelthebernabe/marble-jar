@@ -4,9 +4,12 @@ export const intakeTools: Tool[] = [
   {
     name: "log_activity_and_mint_marble",
     description:
-      "Log a daily activity and mint a marble for it. Use this when a user reports " +
-      "they completed their daily ritual — a workout, meditation, or custom habit. " +
-      "This is the core action: the user did the thing, now the jar gets a marble.",
+      "Log a daily activity. For WORKOUT jars with Strava connected, this auto-confirms " +
+      "and mints a marble immediately. For MEDITATION jars or manual workout logs without " +
+      "Strava, this creates a PENDING activity and automatically requests a witness " +
+      "confirmation from another group member. The marble is minted when the witness " +
+      "confirms via a one-tap SMS link. Use this as the core action when a user reports " +
+      "completing their daily goal.",
     input_schema: {
       type: "object",
       properties: {

@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { db } from "@/lib/db";
 import { createClient } from "@/lib/supabase/server";
-import { getSymbolIcon } from "@/lib/constants";
+import { getUserDayDate } from "@/lib/timezone";
 import { PaperCard } from "@/components/ui/paper-card";
 import { TapeDivider } from "@/components/ui/tape-divider";
 import { JarWithMarbles } from "@/components/jar/jar-with-marbles";
+import { JarCelebration } from "@/components/jar/jar-celebration";
 import { Marble } from "@/components/marble/marble";
 
 const CATEGORY_EMOJI: Record<string, string> = {
@@ -74,7 +76,12 @@ export default async function JarViewPage({
 
   if (!jar) return notFound();
 
-  const today = new Date().toISOString().split("T")[0];
+  // Use the authenticated user's timezone for consistent day calculation
+  const currentUser = await db.user.findUnique({ where: { id: authUser.id } });
+  const today = getUserDayDate(currentUser?.timezone ?? "America/Los_Angeles");
+
+  // Server-side fill percentage calculation
+  const fillPercent = jar.capacity > 0 ? Math.round((jar.marbles.length / jar.capacity) * 100) : 0;
 
   // Build marble data for the jar component
   const marbleData = jar.marbles.map((m) => ({
@@ -99,23 +106,45 @@ export default async function JarViewPage({
     };
   });
 
+  // Detect jar completion
+  const isFull = jar.marbles.length >= jar.capacity;
+
   return (
     <div className="max-w-2xl mx-auto px-6 py-12">
-      <h1
-        className="font-marker text-4xl text-ink mb-1"
-        style={{ transform: "rotate(-1deg)" }}
-      >
-        {jar.group.name}
-      </h1>
-      <h2 className="font-archivo text-xl text-punk-pink mb-6">
-        {CATEGORY_EMOJI[jar.category] || "✨"} {jar.category}
-      </h2>
+      {/* Celebration overlay when jar is full */}
+      <JarCelebration
+        isFull={isFull}
+        treatDescription={jar.treatDescription}
+        groupName={jar.group.name}
+        marbles={marbleData}
+      />
+
+      <div className="flex items-start justify-between">
+        <div>
+          <h1
+            className="font-marker text-4xl text-ink mb-1"
+            style={{ transform: "rotate(-1deg)" }}
+          >
+            {jar.group.name}
+          </h1>
+          <h2 className="font-archivo text-xl text-punk-pink mb-6">
+            {CATEGORY_EMOJI[jar.category] || "✨"} {jar.category}
+          </h2>
+        </div>
+        <Link
+          href={`/jar/${id}/settings`}
+          className="font-archivo text-xs uppercase tracking-wider border-2 border-ink px-3 py-2 hover:bg-ink hover:text-white transition-colors mt-2"
+        >
+          ⚙ Settings
+        </Link>
+      </div>
 
       {/* Jar visualization */}
       <div className="flex justify-center mb-8">
         <JarWithMarbles
           marbles={marbleData}
           capacity={jar.capacity}
+          fillPercent={fillPercent}
           label={jar.category.toLowerCase()}
         />
       </div>
